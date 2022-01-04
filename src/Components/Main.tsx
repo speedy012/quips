@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import CardContainer from "./CardContainer";
 import FavoriteCard from "./FavoriteCards";
 import Search from "./Search";
-import { log } from "console";
 
 type Institution = {
   data: {
@@ -26,6 +25,7 @@ const Main: React.FC = () => {
       {} as { [institutionId: string]: boolean },
       "Favorite"
     );
+    
   const [favorites, setFavorites] = useState<Institution[]>([]);
   const keys = Object.keys(favoritedInstitutionMap);
 
@@ -65,14 +65,31 @@ const Main: React.FC = () => {
   }
 
   const toggleFavorites = (props: any) => {
-    setFavoritedInstitutionMap({
-      ...favoritedInstitutionMap,
-      [props.data.ID]: !props.favorite,
-    });
-    console.log("localStorage", favoritedInstitutionMap);
-    console.log(props);
 
-    //needs rework logic
+    console.log("props", props);
+    const bankID = props.data.ID
+    if (favoritedInstitutionMap[bankID] !== undefined) {
+      // bank is in local storage
+      setFavoritedInstitutionMap({
+        ...favoritedInstitutionMap, [bankID]: !favoritedInstitutionMap[bankID]
+      })
+    } else {
+      // bank isn't in local storage
+      setFavoritedInstitutionMap({
+        ...favoritedInstitutionMap, [bankID]: true
+      })
+    }
+    // setFavoritedInstitutionMap({
+    //   ...favoritedInstitutionMap,
+    //   [props.data.ID]: !props.favorite,
+    // });
+    console.log("localStorage", favoritedInstitutionMap);
+    
+
+
+
+
+    // needs rework logic
     let institutionsCopy = [...institutions].map((institution) => {
       if (institution.data.ID === props.data.ID) {
         return { ...institution, favorite: !props.favorite };
@@ -84,15 +101,21 @@ const Main: React.FC = () => {
     console.log("copy", institutionsCopy);
 
     setInstitutions(institutionsCopy);
+    
 
-    const favoritedArray = [...institutions].filter((institution) => {
-      institution.favorite = !institution.favorite;
-      return keys.indexOf(institution.data.ID) >= 0;
-    });
-
-    console.log("favs in use", favoritedArray);
-    setFavorites(favoritedArray);
+    
   };
+
+  // useEffect(() => {
+  //   const favoritedArray = [...institutions].filter((institution) => {
+  //     institution.favorite = !institution.favorite;
+  //     return keys.indexOf(institution.data.ID) >= 0;
+  //   });
+
+  //   console.log("favs in use", favoritedArray);
+  //   setFavorites(favoritedArray);
+
+  // }, [])
 
   // const checkFavorites = () => {
   //
@@ -114,7 +137,9 @@ const Main: React.FC = () => {
   // };
 
   // console.log("setFavorites", favorites);
-  console.log(institutions);
+
+  console.log('instit', institutions )
+
   return (
     <div>
       <Search
@@ -129,6 +154,6 @@ const Main: React.FC = () => {
       />
     </div>
   );
-};
+};;
 
 export default Main;

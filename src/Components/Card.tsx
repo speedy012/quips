@@ -16,14 +16,16 @@ type CardProps = {
     };
     favorite: boolean;
   };
-
   toggleFavorites: Function;
 };
 
 function Card(props: CardProps) {
   const [showModal, setShowModal] = useState(false);
 
-  // console.log("card", props);
+  //getting localstorage
+  // const key = Object.keys(props.favoritedInstitutionMap);
+
+  let keys = window.localStorage.getItem("Favorite");
 
   return (
     <div className="flex flex-col items-center max-w-sm rounded overflow-hidden shadow-lg p-2.5 ">
@@ -50,15 +52,17 @@ function Card(props: CardProps) {
                   </div>
                   {/*body*/}
                   <div className="relative p-6 flex-auto">
-                    {!props.institution.favorite ? (
+                    {keys[props.institution.data.ID] !== undefined &&
+                    keys[props.institution.data.ID] === true ? (
                       <IconContext.Provider value={{ color: "red" }}>
                         <button
                           onClick={() =>
                             props.toggleFavorites(props.institution)
                           }
                           className="relative float-right"
+                          type="button"
                         >
-                          <AiOutlineHeart className="h-6 w-6" />
+                          <AiFillHeart className="h-6 w-6" />
                         </button>
                       </IconContext.Provider>
                     ) : (
@@ -69,11 +73,10 @@ function Card(props: CardProps) {
                           }
                           className="relative float-right"
                         >
-                          <AiFillHeart className="h-6 w-6" />
+                          <AiOutlineHeart className="h-6 w-6" />
                         </button>
                       </IconContext.Provider>
                     )}
-
                     <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
                       Deals in
                       <span className="font-bold ml-2">
